@@ -1,0 +1,37 @@
+/*:root {
+    --background-color: #4C5C68;
+    --text-color: #46494C;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+nav {
+    background-color: var(--background-color);
+}
+
+nav > a > span {
+    color: var(--text-color);
+}*/
+
+.content {
+    padding-top: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+img {
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}

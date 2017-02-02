@@ -1,0 +1,6 @@
+.DS_Store
+.vscode/
+bin/
+engine-output/
+obj/
+project.lock.json
