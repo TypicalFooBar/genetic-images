@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using ImageSharp;
 using System.Linq;
 using System.Threading.Tasks;
+using SkiaSharp;
 
 namespace GeneticImages.Core
 {
@@ -9,8 +9,8 @@ namespace GeneticImages.Core
     {
         private List<Gene> genes = new List<Gene>();
         public int CurrentGeneration { get; private set; } = 1;
-        private int numberOfGenes = 100;
-        private Image targetImage;
+        private int numberOfGenes = 1000;
+        private SKBitmap targetBitmap;
 
         public int BestFitness {
             get {
@@ -32,28 +32,28 @@ namespace GeneticImages.Core
             }
         }
 
-        public Population(Image targetImage)
+        public Population(SKBitmap targetBitmap)
         {
-            this.targetImage = targetImage;
+            this.targetBitmap = targetBitmap;
 
-            Utilities.SaveImage(this.targetImage, "target.png");
+            Utilities.SaveBitmapAsPng(this.targetBitmap, "target");
         }
 
-        public void GenerateStaticGenePopulation()
-        {
-            for (int i = 0; i < this.numberOfGenes; i++)
-            {
-                Gene gene = new StaticGene(this.targetImage.Width, this.targetImage.Height);
-                gene.InitRandomly();
-                this.genes.Add(gene);
-            }
-        }
+        // public void GenerateStaticGenePopulation()
+        // {
+        //     for (int i = 0; i < this.numberOfGenes; i++)
+        //     {
+        //         Gene gene = new StaticGene(this.targetBitmap.Width, this.targetBitmap.Height);
+        //         gene.InitRandomly();
+        //         this.genes.Add(gene);
+        //     }
+        // }
 
         public void GeneratePaintGenePopulation()
         {
             for (int i = 0; i < this.numberOfGenes; i++)
             {
-                Gene gene = new PaintGene(this.targetImage.Width, this.targetImage.Height);
+                Gene gene = new DrawLineGene(this.targetBitmap.Width, this.targetBitmap.Height);
                 gene.InitRandomly();
                 this.genes.Add(gene);
             }
@@ -66,11 +66,11 @@ namespace GeneticImages.Core
                 from g in this.genes
                 orderby g.Fitness descending
                 select g
-            ).Take(10).ToList();
+            ).Take(100).ToList();
 
             // Save the image of the top gene
             //if (this.CurrentGeneration % 100 == 0)
-            Utilities.SaveImage(topGenes[0].Image, "/generation-" + this.CurrentGeneration + "-gene"+ ".png");
+            	Utilities.SaveBitmapAsPng(topGenes[0].Bitmap, $"/generation-{this.CurrentGeneration}");
 
             // Set the current population to be the new genes
             this.genes = ReproduceGenes(topGenes);
@@ -132,7 +132,7 @@ namespace GeneticImages.Core
             {
                 tasks.Add(Task.Run(() => {
                     gene.Draw();
-                    gene.EvaluateFitness(this.targetImage); 
+                    gene.EvaluateFitness(this.targetBitmap); 
                 }));
             }
 

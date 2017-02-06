@@ -1,5 +1,4 @@
-using System.IO;
-using ImageSharp;
+using SkiaSharp;
 
 namespace GeneticImages.Core
 {
@@ -17,16 +16,16 @@ namespace GeneticImages.Core
 
         }
 
-        public void Run(Image targetImage)
+        public void Run(SKBitmap targetBitmap)
         {
             // Remove the current engine output directory
             //Directory.Delete("engine-output");
 
-            population = new Population(targetImage);
+            population = new Population(targetBitmap);
             //population.GenerateStaticGenePopulation();
             population.GeneratePaintGenePopulation();
 
-            while (population.CurrentGeneration <= 10000)
+            while (population.CurrentGeneration <= 1000)
             {
                 population.EvaluateFitness();
 
@@ -36,7 +35,7 @@ namespace GeneticImages.Core
             }
 
             population.EvaluateFitness();
-            Utilities.SaveImage(population.BestGene.Image, "result.png");
+            Utilities.SaveBitmapAsPng(population.BestGene.Bitmap, "result");
         }
 
         public Engine.Status GetStatus()

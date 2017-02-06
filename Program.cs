@@ -7,8 +7,6 @@ namespace GeneticImages
     {
         public static void Main(string[] args)
         {
-            ImageSharp.Configuration.Default.AddImageFormat(new ImageSharp.Formats.PngFormat());
-
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())

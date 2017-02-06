@@ -1,16 +1,16 @@
 using System;
-using ImageSharp;
+using SkiaSharp;
 
 namespace GeneticImages.Core
 {
     public abstract class Gene
     {
-        public Image Image { get; protected set; }
+		public SKBitmap Bitmap { get; protected set; }
         public int Fitness { get; protected set; }
 
         public Gene(int width, int height)
         {
-            this.Image = new Image(width, height);
+            this.Bitmap = new SKBitmap(width, height);
         }
 
         public abstract void InitRandomly();
@@ -19,25 +19,21 @@ namespace GeneticImages.Core
 
         public virtual void Draw() {}
 
-        public void EvaluateFitness(Image targetImage)
+        public void EvaluateFitness(SKBitmap targetBitmap)
         {
             this.Fitness = 0;
 
-            using (PixelAccessor<Color> targetPixels = targetImage.Lock())
-            using (PixelAccessor<Color> pixels = this.Image.Lock())
-            {
-                for (int i = 0; i < pixels.Width; i++)
-                {
-                    for (int j = 0; j < pixels.Height; j++)
-                    {
-                        // Add score for how close they are to the correct value
-                        this.Fitness += 255 - Math.Abs(targetPixels[i, j].R - pixels[i, j].R);
-                        this.Fitness += 255 - Math.Abs(targetPixels[i, j].G - pixels[i, j].G);
-                        this.Fitness += 255 - Math.Abs(targetPixels[i, j].B - pixels[i, j].B);
-                        this.Fitness += 255 - Math.Abs(targetPixels[i, j].A - pixels[i, j].A);
-                    }
-                }
-            }
+			SKColor[] pixels = this.Bitmap.Pixels;
+			SKColor[] targetPixels = targetBitmap.Pixels;
+
+			for (int i = 0; i < pixels.Length; i++)
+			{
+				// Add score for how close they are to the correct value
+				this.Fitness += 255 - Math.Abs(targetPixels[i].Red - pixels[i].Red);
+				this.Fitness += 255 - Math.Abs(targetPixels[i].Green - pixels[i].Green);
+				this.Fitness += 255 - Math.Abs(targetPixels[i].Blue - pixels[i].Blue);
+				this.Fitness += 255 - Math.Abs(targetPixels[i].Alpha - pixels[i].Alpha);
+			}
         }
     }
 }

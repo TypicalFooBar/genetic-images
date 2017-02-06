@@ -1,9 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using GeneticImages.Core;
-using ImageSharp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkiaSharp;
 
 namespace GeneticImages.Controllers
 {
@@ -33,14 +33,14 @@ namespace GeneticImages.Controllers
             GeneticImages.engineIsRunning = true;
             GeneticImages.resultsAvailable = false;
 
-            Image targetImage;
+            SKBitmap targetBitmap;
             using (Stream stream = file.OpenReadStream())
             {
-                targetImage = new Image(stream);
+                targetBitmap = Utilities.LoadBitmap(stream);
             }
 
             Task.Run(() => {
-                GeneticImages.engine.Run(targetImage);
+                GeneticImages.engine.Run(targetBitmap);
 
                 GeneticImages.engineIsRunning = false;
                 GeneticImages.resultsAvailable = true;
@@ -53,7 +53,7 @@ namespace GeneticImages.Controllers
         public IActionResult BestImageFromGeneration(int id)
         {
             return new FileStreamResult(
-                new FileStream("engine-output/generation-" + id + "-gene.png", FileMode.Open),
+                new FileStream($"engine-output/generation-{id}.png", FileMode.Open),
                 "image/png"
             );
         }

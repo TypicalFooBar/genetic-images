@@ -17,10 +17,8 @@
         "Microsoft.AspNetCore.Mvc": "1.1.1",
         "Microsoft.AspNetCore.StaticFiles": "1.1.0",
         "Microsoft.AspNetCore.Diagnostics": "1.1.0",
-        "ImageSharp": "1.0.0-alpha1-*",
-        "ImageSharp.Formats.Png": "1.0.0-alpha1-*",
-        "ImageSharp.Drawing": "1.0.0-alpha1-*",
         "Newtonsoft.Json": "9.0.*",
+		"SkiaSharp": "1.56.1-beta"
       },
       "imports": "dnxcore50"
     }
