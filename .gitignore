@@ -3,3 +3,5 @@ bin/
 engine-output/
 obj/
 project.lock.json
+node_modules/
+wwwroot/js/build.js
