@@ -1,47 +1,5 @@
 @section scripts {
-    <!--<script src="/js/vue/index.js"></script>-->
-	<script src="http://localhost:8080/wwwroot/build.js"></script>
+	<script src="/js/build.js"></script>
 }
 
 <home-component></home-component>
-
-
-<!--<div id="app" v-if="appInitialized" v-cloak>
-    <div class="flex">
-        <div></div>
-        <div class="text-center">
-            <div v-if="engineIsRunning || resultsAvailable">
-                <p>{{engineStatusMessage}}</p>
-                <div class="flex two">
-                    <div>
-                        <article class="card">
-                            <img style="width:100%" v-bind:src="targetImgSrc">
-                            <footer>Target Image</footer>
-                        </article>
-                    </div>
-                    <div>
-                        <article class="card">
-                            <img style="width:100%" v-bind:src="bestGeneImgSrc">
-                            <footer>Latest Computed Image</footer>
-                        </article>
-                    </div>
-                </div>
-                <div v-if="!resultsAvailable">
-                    <i class="fa fa-cog fa-spin fa-5x fa-fw"></i>
-                </div>
-                <div v-if="resultsAvailable">
-                    
-                </div>
-            </div>
-            <div v-if="!engineIsRunning">
-                <h1>Upload Image</h1>
-                <div>
-                    <label class="dropimage">
-                        <input ref="uploadFileInput" v-on:change="uploadFile" title="Drop image or click me" type="file">
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div></div>
-    </div>
-</div>-->

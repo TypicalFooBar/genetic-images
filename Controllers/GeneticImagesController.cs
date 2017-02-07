@@ -58,6 +58,11 @@ namespace GeneticImages.Controllers
             );
         }
 
+		public IActionResult LatestImage()
+		{
+			return BestImageFromGeneration(GeneticImages.engine.GetStatus().CurrentGeneration);
+		}
+
         public IActionResult TargetImage()
         {
             return new FileStreamResult(

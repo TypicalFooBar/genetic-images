@@ -9,7 +9,7 @@ namespace GeneticImages.Core
     {
         private List<Gene> genes = new List<Gene>();
         public int CurrentGeneration { get; private set; } = 1;
-        private int numberOfGenes = 1000;
+        private int numberOfGenes = 100;
         private SKBitmap targetBitmap;
 
         public int BestFitness {
@@ -66,7 +66,7 @@ namespace GeneticImages.Core
                 from g in this.genes
                 orderby g.Fitness descending
                 select g
-            ).Take(100).ToList();
+            ).Take(10).ToList();
 
             // Save the image of the top gene
             //if (this.CurrentGeneration % 100 == 0)

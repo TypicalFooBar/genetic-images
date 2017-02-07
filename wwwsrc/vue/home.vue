@@ -10,16 +10,15 @@
 					<p>{{engineStatusMessage}}</p>
 					<div class="flex two">
 						<div>
-							<article class="card">
-								<img style="width:100%" v-bind:src="targetImgSrc">
-								<footer>Target Image</footer>
-							</article>
+							<image-card-component
+								src="/GeneticImages/TargetImage"
+								message="Target Image"/>
 						</div>
 						<div>
-							<article class="card">
-								<img style="width:100%" v-bind:src="bestGeneImgSrc">
-								<footer>Latest Computed Image</footer>
-							</article>
+							<image-card-component
+								src="/GeneticImages/LatestImage"
+								message="Latest Computed Image"
+								:refresh-interval="1000"/>
 						</div>
 					</div>
 					<div v-if="!resultsAvailable">
@@ -87,8 +86,8 @@
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
 					
-					this.targetImgSrc = "/GeneticImages/TargetImage?" + new Date().getTime();
-					this.bestGeneImgSrc = "/GeneticImages/BestImageFromGeneration/" + response.body.currentGeneration + "?" + new Date().getTime();
+					//this.targetImgSrc = "/GeneticImages/TargetImage?" + new Date().getTime();
+					//this.bestGeneImgSrc = "/GeneticImages/BestImageFromGeneration/" + response.body.currentGeneration + "?" + new Date().getTime();
 
 					return Promise.resolve();
 				})

@@ -25,6 +25,8 @@ namespace GeneticImages.Core
             //population.GenerateStaticGenePopulation();
             population.GeneratePaintGenePopulation();
 
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+
             while (population.CurrentGeneration <= 1000)
             {
                 population.EvaluateFitness();
@@ -33,6 +35,10 @@ namespace GeneticImages.Core
 
                 population.NaturalSelection();
             }
+
+			watch.Stop();
+			var elapsedMs = watch.ElapsedMilliseconds;
+			System.Console.WriteLine($"Milliseconds: {elapsedMs}");
 
             population.EvaluateFitness();
             Utilities.SaveBitmapAsPng(population.BestGene.Bitmap, "result");
