@@ -1,16 +1,25 @@
 {
     "version": "0.1.0",
-    "command": "dotnet",
-    "isShellCommand": true,
-    "args": [],
     "tasks": [
         {
             "taskName": "build",
-            "args": [
-                "${workspaceRoot}/project.json"
-            ],
-            "isBuildCommand": true,
-            "problemMatcher": "$msCompile"
-        }
+			"isBuildCommand": true,
+			"isShellCommand": true,
+            "problemMatcher": "$msCompile",
+            "command": "dotnet",
+            "args": ["build", "${workspaceRoot}/project.json"]
+        },
+        {
+            "taskName": "run",
+            "isShellCommand": true,
+            "command": "dotnet",
+            "args": ["run"]
+        },
+		{
+			"taskName": "watchify",
+			"isShellCommand": true,
+			"command": "node_modules/watchify/bin/cmd.js",
+			"args": ["-t", "vueify", "wwwsrc/js/main.js", "-o", "wwwroot/js/build.js", "-v"]
+		}
     ]
 }
