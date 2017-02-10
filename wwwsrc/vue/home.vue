@@ -18,7 +18,7 @@
 							<image-card-component
 								src="/GeneticImages/LatestImage"
 								message="Latest Computed Image"
-								:refresh-interval="1000"/>
+								:refresh="engineIsRunning"/>
 						</div>
 					</div>
 					<div v-if="!resultsAvailable">
@@ -46,7 +46,14 @@
 	export default {
 		name: 'home',
 		created: function() {
-			this.init();
+			this.getEngineStatus().then(response => {
+				this.appInitialized = true;
+
+				if (this.engineIsRunning) {
+					// Start the status loop
+					this.getEngineStatusTimeout();
+				}
+			});
 		},
 		data() {
 			return {
@@ -58,15 +65,6 @@
 			}
 		},
 		methods: {
-			init: function() {
-				this.getEngineStatus().then(response => {
-					this.appInitialized = true;
-
-					if (this.engineIsRunning) {
-						this.getEngineStatusTimeout();
-					}
-				});
-			},
 			getEngineStatusTimeout: function() {
 				var self = this;
 				setTimeout(function() {
@@ -82,7 +80,7 @@
 			},
 			getEngineStatus: function() {
 				return this.$http.get("/GeneticImages/EngineStatus").then(response => {
-					this.engineIsRunning = response.body.engineIsRunning;
+					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
 					
@@ -105,7 +103,7 @@
 				data.append('file', file);
 
 				this.$http.post("/GeneticImages/RunStatic", data).then(response => {
-					this.engineIsRunning = response.body.engineIsRunning;
+					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
 

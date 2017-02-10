@@ -1,5 +1,4 @@
 using System.IO;
-using System.Threading.Tasks;
 using GeneticImages.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,29 +8,15 @@ namespace GeneticImages.Controllers
 {
     public class GeneticImages : Controller
     {
-        private class EngineStatusResponse
-        {
-            public bool EngineIsRunning { get; set; }
-            public bool ResultsAvailable { get; set; }
-            public int CurrentGeneration { get; set; }
-            public string Message { get; set; }
-        }
-
-        private static bool engineIsRunning = false;
-        private static bool resultsAvailable = false;
-
         private static Engine engine = new Engine();
 
         [HttpPost]
         public IActionResult RunStatic(IFormFile file)
         {
-            if (GeneticImages.engineIsRunning)
+            if (GeneticImages.engine.GetStatus().IsRunning)
             {
-                return BadRequest(this.GetEngineStatusResponse());
+                return BadRequest(GeneticImages.engine.GetStatus());
             }
-
-            GeneticImages.engineIsRunning = true;
-            GeneticImages.resultsAvailable = false;
 
             SKBitmap targetBitmap;
             using (Stream stream = file.OpenReadStream())
@@ -39,13 +24,7 @@ namespace GeneticImages.Controllers
                 targetBitmap = Utilities.LoadBitmap(stream);
             }
 
-            Task.Run(() => {
-                GeneticImages.engine.Run(targetBitmap);
-
-                GeneticImages.engineIsRunning = false;
-                GeneticImages.resultsAvailable = true;
-
-            });
+			GeneticImages.engine.Run(targetBitmap);
 
             return this.EngineStatus();
         }
@@ -71,37 +50,16 @@ namespace GeneticImages.Controllers
             );
         }
 
+		public IActionResult Cancel()
+		{
+			GeneticImages.engine.Cancel();
+
+			return Ok(GeneticImages.engine.GetStatus());
+		}
+
         public IActionResult EngineStatus()
         {
-            return Ok(this.GetEngineStatusResponse());
-        }
-
-        private EngineStatusResponse GetEngineStatusResponse()
-        {
-            string message = "";
-
-            if (!engineIsRunning && !resultsAvailable)
-            {
-                message = "Engine is idle";
-            }
-            else if (engineIsRunning && !resultsAvailable)
-            {
-                message = "Engine is running";
-            }
-            else if (!engineIsRunning && resultsAvailable)
-            {
-                message = "Results are available";
-            }
-
-            // TODO: Get all engine status from this object
-            Engine.Status engineStatus = GeneticImages.engine.GetStatus();
-
-            return new EngineStatusResponse {
-                EngineIsRunning = GeneticImages.engineIsRunning,
-                ResultsAvailable = GeneticImages.resultsAvailable,
-                CurrentGeneration = engineStatus.CurrentGeneration,
-                Message = message
-            };
+            return Ok(GeneticImages.engine.GetStatus());
         }
     }
 }

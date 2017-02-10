@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using SkiaSharp;
 
 namespace GeneticImages.Core
@@ -7,48 +9,83 @@ namespace GeneticImages.Core
         public class Status
         {
             public int CurrentGeneration { get; set; }
+			public bool IsRunning { get; set; }
+			public bool ResultsAvailable { get; set; }
+			public string Message { get; set; }
         }
 
-        Population population;
+        private Population population;
+		private Status status;
+		private Task runInstance;
+		private bool cancel;
 
         public Engine()
         {
-
+			this.status = new Status();
         }
 
         public void Run(SKBitmap targetBitmap)
         {
-            // Remove the current engine output directory
-            //Directory.Delete("engine-output");
+			// Create a new run instance
+			this.runInstance = Task.Run(() => {
+				// Update engine status
+				this.UpdateStatus(true, false, "Engine is running");
 
-            population = new Population(targetBitmap);
-            //population.GenerateStaticGenePopulation();
-            population.GeneratePaintGenePopulation();
+				// Remove the current engine output directory
+				//Directory.Delete("engine-output");
 
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+				this.population = new Population(targetBitmap);
+				//population.GenerateStaticGenePopulation();
+				this.population.GeneratePaintGenePopulation();
 
-            while (population.CurrentGeneration <= 1000)
-            {
-                population.EvaluateFitness();
+				var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                //Console.WriteLine("Current Best Fitness [Generation " + population.CurrentGeneration + "]: " + population.BestFitness);
+				while (this.population.CurrentGeneration <= 1000)
+				{
+					// Check to see if this run has been cancelled
+					if (this.cancel)
+					{
+						// Update engine status
+						this.UpdateStatus(false, true, "Engine was cancelled");
+						this.cancel = false;
+						break;
+					}
 
-                population.NaturalSelection();
-            }
+					this.population.EvaluateFitness();
+					this.population.NaturalSelection();
 
-			watch.Stop();
-			var elapsedMs = watch.ElapsedMilliseconds;
-			System.Console.WriteLine($"Milliseconds: {elapsedMs}");
+					// Update engine status
+					this.status.CurrentGeneration = this.population.CurrentGeneration - 1;
+				}
 
-            population.EvaluateFitness();
-            Utilities.SaveBitmapAsPng(population.BestGene.Bitmap, "result");
+				watch.Stop();
+				var elapsedMs = watch.ElapsedMilliseconds;
+				System.Console.WriteLine($"Milliseconds: {elapsedMs}");
+
+				this.population.EvaluateFitness();
+				Utilities.SaveBitmapAsPng(this.population.BestGene.Bitmap, "result");
+
+				// Update engine status
+				this.UpdateStatus(false, true, "Results are available");
+				this.cancel = false;
+			});
         }
+
+		public void Cancel()
+		{
+			this.cancel = true;
+		}
+
+		private void UpdateStatus(bool isRunning, bool resultsAvailable, string message)
+		{
+			this.status.IsRunning = isRunning;
+			this.status.ResultsAvailable = resultsAvailable;
+			this.status.Message = message;
+		}
 
         public Engine.Status GetStatus()
         {
-            return new Engine.Status {
-                CurrentGeneration = this.population == null ? 0 : this.population.CurrentGeneration - 1
-            };
+            return this.status;
         }
     }
 }

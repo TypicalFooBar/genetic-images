@@ -23,37 +23,39 @@
 				type: String,
 				default: null
 			},
-			refreshInterval: {
-				type: Number,
-				default: 0
+			refresh: {
+				type: Boolean,
+				default: false
 			}
 		},
 		created: function() {
-			// If a refresh interval is specified
-			if (this.refreshInterval > 0) {
-				// Set the image and start the refresh loop
-				this.imgSrc = this.src;
-				this.refreshImage(this.refreshInterval);
-			}
-			// Otherwise just set the src one time
-			else {
-				this.imgSrc = this.src;
-			}
+			// Set the image
+			this.imgSrc = this.src;
+
+			// Start the refresh loop
+			this.refreshLoop();
+
+			var self = this;
 		},
 		data() {
 			return {
-				imgSrc: null
+				imgSrc: null,
+				stopRefresh: false,
+				refreshInterval: 1000
 			}
 		},
 		methods: {
-			refreshImage: function() {
+			refreshLoop: function() {
 				var self = this;
+
 				setTimeout(function() {
-					// Download the image again by adding a timestamp to the end
-					self.imgSrc = self.src + "?" + new Date().getTime();
+					if (self.refresh) {
+						// Download the image again by adding a timestamp to the end
+						self.imgSrc = self.src + "?" + new Date().getTime();
+					}
 
 					// Refresh again after the specified interval
-					self.refreshImage();
+					self.refreshLoop();
 				}, this.refreshInterval);
 			}
 		}
