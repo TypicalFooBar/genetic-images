@@ -12,20 +12,21 @@
 						<div>
 							<image-card-component
 								src="/GeneticImages/TargetImage"
-								message="Target Image"/>
+								message="Target Image"
+								:refresh="refreshImages"/>
 						</div>
 						<div>
 							<image-card-component
 								src="/GeneticImages/LatestImage"
 								message="Latest Computed Image"
-								:refresh="engineIsRunning"/>
+								:refresh="engineIsRunning || refreshImages"/>
 						</div>
 					</div>
 					<div v-if="!resultsAvailable">
 						<i class="fa fa-cog fa-spin fa-5x fa-fw"></i>
 					</div>
 					<div v-if="resultsAvailable">
-						
+
 					</div>
 				</div>
 				<div v-if="!engineIsRunning">
@@ -61,7 +62,7 @@
 				engineIsRunning: false,
 				resultsAvailable: false,
 				engineStatusMessage: "",
-				targetImgSrc: null
+				refreshImages: false
 			}
 		},
 		methods: {
@@ -75,6 +76,12 @@
 							// Do the timeout again until the engine is not running
 							self.getEngineStatusTimeout();
 						}
+						else {
+							// The engine has stopped
+
+							// Refresh the images to make sure we get the final result
+							self.imageRefresh();
+						}
 					});
 				}, 1000);
 			},
@@ -83,12 +90,19 @@
 					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
-					
-					//this.targetImgSrc = "/GeneticImages/TargetImage?" + new Date().getTime();
-					//this.bestGeneImgSrc = "/GeneticImages/BestImageFromGeneration/" + response.body.currentGeneration + "?" + new Date().getTime();
 
 					return Promise.resolve();
 				})
+			},
+			imageRefresh: function() {
+				this.refreshImages = true;
+				var self = this;
+
+				// Turn the refresh flag off after 2 seconds.
+				// This is more than enough time to allow the image cards to refresh.
+				setTimeout(function() {
+					self.refreshImages = false;
+				}, 2000);
 			},
 			uploadFile: function() {
 				// Get only one file (the first one)
@@ -106,6 +120,9 @@
 					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
+
+					// Refresh the images to make sure we get the new target image
+					this.imageRefresh();
 
 					this.getEngineStatusTimeout();
 				}, response => {

@@ -24,7 +24,13 @@ namespace GeneticImages.Controllers
                 targetBitmap = Utilities.LoadBitmap(stream);
             }
 
-			GeneticImages.engine.Run(targetBitmap);
+			Engine.RunConfig runConfig = new Engine.RunConfig() {
+				TargetBitmap = targetBitmap,
+				Generations = 100,
+				GenesPerGeneration = 100,
+				GenesToReproduce = 10
+			};
+			GeneticImages.engine.Run(runConfig);
 
             return this.EngineStatus();
         }

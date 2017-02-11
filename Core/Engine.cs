@@ -1,4 +1,4 @@
-using System.Threading;
+using System.IO;
 using System.Threading.Tasks;
 using SkiaSharp;
 
@@ -8,11 +8,19 @@ namespace GeneticImages.Core
     {
         public class Status
         {
-            public int CurrentGeneration { get; set; }
+            public int CurrentGeneration { get; set; } = 1;
 			public bool IsRunning { get; set; }
 			public bool ResultsAvailable { get; set; }
 			public string Message { get; set; }
         }
+
+		public class RunConfig
+		{
+			public SKBitmap TargetBitmap { get; set; }
+			public int Generations { get; set; }
+			public int GenesPerGeneration { get; set; }
+			public int GenesToReproduce { get; set; }
+		}
 
         private Population population;
 		private Status status;
@@ -24,7 +32,7 @@ namespace GeneticImages.Core
 			this.status = new Status();
         }
 
-        public void Run(SKBitmap targetBitmap)
+        public void Run(RunConfig runConfig)
         {
 			// Create a new run instance
 			this.runInstance = Task.Run(() => {
@@ -32,15 +40,15 @@ namespace GeneticImages.Core
 				this.UpdateStatus(true, false, "Engine is running");
 
 				// Remove the current engine output directory
-				//Directory.Delete("engine-output");
+				Directory.Delete("engine-output", true);
 
-				this.population = new Population(targetBitmap);
+				this.population = new Population(runConfig.TargetBitmap, runConfig.GenesPerGeneration, runConfig.GenesPerGeneration);
 				//population.GenerateStaticGenePopulation();
 				this.population.GeneratePaintGenePopulation();
 
 				var watch = System.Diagnostics.Stopwatch.StartNew();
 
-				while (this.population.CurrentGeneration <= 1000)
+				for (int i = 1; i <= runConfig.Generations; i++)
 				{
 					// Check to see if this run has been cancelled
 					if (this.cancel)
@@ -52,10 +60,14 @@ namespace GeneticImages.Core
 					}
 
 					this.population.EvaluateFitness();
-					this.population.NaturalSelection();
+					Gene topGene = this.population.NaturalSelection();
+
+					// Save the image of the top gene
+					//if (this.CurrentGeneration % 100 == 0)
+						Utilities.SaveBitmapAsPng(topGene.Bitmap, $"/generation-{i}");
 
 					// Update engine status
-					this.status.CurrentGeneration = this.population.CurrentGeneration - 1;
+					this.status.CurrentGeneration = i ;
 				}
 
 				watch.Stop();

@@ -8,8 +8,8 @@ namespace GeneticImages.Core
     public class Population
     {
         private List<Gene> genes = new List<Gene>();
-        public int CurrentGeneration { get; private set; } = 1;
-        private int numberOfGenes = 100;
+        private int numberOfGenes;
+		private int numberOfGenesToReproduce;
         private SKBitmap targetBitmap;
 
         public int BestFitness {
@@ -32,9 +32,11 @@ namespace GeneticImages.Core
             }
         }
 
-        public Population(SKBitmap targetBitmap)
+        public Population(SKBitmap targetBitmap, int numberOfGenes, int numberOfGenesToReproduce)
         {
             this.targetBitmap = targetBitmap;
+			this.numberOfGenes = numberOfGenes;
+			this.numberOfGenesToReproduce = numberOfGenesToReproduce;
 
             Utilities.SaveBitmapAsPng(this.targetBitmap, "target");
         }
@@ -59,24 +61,19 @@ namespace GeneticImages.Core
             }
         }
 
-        public void NaturalSelection()
+        public Gene NaturalSelection()
         {
             // Get the top genes
             List<Gene> topGenes = (
                 from g in this.genes
                 orderby g.Fitness descending
                 select g
-            ).Take(10).ToList();
-
-            // Save the image of the top gene
-            //if (this.CurrentGeneration % 100 == 0)
-            	Utilities.SaveBitmapAsPng(topGenes[0].Bitmap, $"/generation-{this.CurrentGeneration}");
+            ).Take(this.numberOfGenesToReproduce).ToList();
 
             // Set the current population to be the new genes
             this.genes = ReproduceGenes(topGenes);
 
-            // Increment the generation counter
-            this.CurrentGeneration++;
+			return topGenes[0];
         }
 
         private static object _lock = new object();
