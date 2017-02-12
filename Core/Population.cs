@@ -41,15 +41,15 @@ namespace GeneticImages.Core
             Utilities.SaveBitmap(this.targetBitmap, $"{Utilities.EngineOutputDirectory}/target.png");
         }
 
-        // public void GenerateStaticGenePopulation()
-        // {
-        //     for (int i = 0; i < this.numberOfGenes; i++)
-        //     {
-        //         Gene gene = new StaticGene(this.targetBitmap.Width, this.targetBitmap.Height);
-        //         gene.InitRandomly();
-        //         this.genes.Add(gene);
-        //     }
-        // }
+        public void GenerateStaticGenePopulation()
+        {
+            for (int i = 0; i < this.numberOfGenes; i++)
+            {
+                Gene gene = new StaticGene(this.targetBitmap.Width, this.targetBitmap.Height);
+                gene.InitRandomly();
+                this.genes.Add(gene);
+            }
+        }
 
         public void GeneratePaintGenePopulation()
         {

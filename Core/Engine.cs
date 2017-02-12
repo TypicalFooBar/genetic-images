@@ -44,8 +44,8 @@ namespace GeneticImages.Core
 					Directory.Delete(Utilities.EngineOutputDirectory, true);
 
 				this.population = new Population(runConfig.TargetBitmap, runConfig.GenesPerGeneration, runConfig.GenesPerGeneration);
-				//population.GenerateStaticGenePopulation();
-				this.population.GeneratePaintGenePopulation();
+				population.GenerateStaticGenePopulation();
+				//this.population.GeneratePaintGenePopulation();
 
 				var watch = System.Diagnostics.Stopwatch.StartNew();
 
