@@ -13,11 +13,13 @@ namespace GeneticImages.Controllers
         [HttpPost]
 		public IActionResult Run(IFormFile file, Engine.RunConfig runConfig)
         {
+			// If the engine is running, do not continue
             if (GeneticImages.engine.GetStatus().IsRunning)
             {
                 return BadRequest(GeneticImages.engine.GetStatus());
             }
 
+			// Get the bitmap
             SKBitmap targetBitmap;
             using (Stream stream = file.OpenReadStream())
             {
@@ -27,12 +29,7 @@ namespace GeneticImages.Controllers
 			// Set the target bitmap
 			runConfig.TargetBitmap = targetBitmap;
 
-			// Engine.RunConfig runConfig = new Engine.RunConfig() {
-			// 	TargetBitmap = targetBitmap,
-			// 	Generations = runRequestConfig.Generations,
-			// 	GenesPerGeneration = runRequestConfig.GenesPerGeneration,
-			// 	GenesToReproduce = runRequestConfig.GenesToReproduce
-			// };
+			// Start the engine
 			GeneticImages.engine.Run(runConfig);
 
             return this.EngineStatus();
