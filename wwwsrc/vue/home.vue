@@ -63,7 +63,7 @@
 				resultsAvailable: false,
 				engineStatusMessage: "",
 				refreshImages: false,
-				runRequestConfig: {
+				runConfig: {
 					generations: 100,
 					genesPerGeneration: 100,
 					genesToReproduce: 10,
@@ -113,7 +113,6 @@
 			uploadFile: function() {
 				// Get only one file (the first one)
 				var file = this.$refs.uploadFileInput.files[0];
-				//this.runConfig.file = file;
 
 				// Set the status message
 				this.engineStatusMessage = "Processing " + file.name;
@@ -122,8 +121,8 @@
 				// Create FormData for this run request
 				var data = new FormData();
 				data.append('file', file);
-				for (var key in this.runRequestConfig) {
-					data.append(key, this.runRequestConfig[key])
+				for (var key in this.runConfig) {
+					data.append(key, this.runConfig[key])
 				}
 
 				// Start the engine
