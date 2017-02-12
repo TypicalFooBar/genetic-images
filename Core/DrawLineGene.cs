@@ -61,5 +61,22 @@ namespace GeneticImages.Core
 				);
             }
         }
+
+		public override void SaveSteps()
+		{
+			SKCanvas canvas = new SKCanvas(this.Bitmap);
+			canvas.Clear(SKColors.Transparent);
+			
+            for (int i = 0; i < this.Strokes.Count; i++)
+            {
+				canvas.DrawLine(
+					this.Strokes[i].Points[0].X, this.Strokes[i].Points[0].Y,
+					this.Strokes[i].Points[1].X, this.Strokes[i].Points[1].Y,
+					this.Strokes[i].Paint
+				);
+
+				Utilities.SaveFittestGeneSteps(this.Bitmap, i+1);
+            }
+		}
     }
 }

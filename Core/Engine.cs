@@ -66,6 +66,10 @@ namespace GeneticImages.Core
 					// Save the image of the top gene
 					Utilities.SaveFittestGeneForGeneration(topGene.Bitmap, i);
 
+					// If this is the last generation, then save the step images for this top gene
+					if (i == runConfig.Generations)
+						topGene.SaveSteps();
+
 					// Update engine status
 					this.status.CurrentGeneration = i ;
 				}

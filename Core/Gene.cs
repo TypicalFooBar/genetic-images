@@ -19,6 +19,8 @@ namespace GeneticImages.Core
 
         public virtual void Draw() {}
 
+		public virtual void SaveSteps() {}
+
         public void EvaluateFitness(SKBitmap targetBitmap)
         {
             this.Fitness = 0;
