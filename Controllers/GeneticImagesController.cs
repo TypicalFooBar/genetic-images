@@ -6,12 +6,19 @@ using SkiaSharp;
 
 namespace GeneticImages.Controllers
 {
+	public class RunRequestConfig
+	{
+		public int Generations { get; set; }
+		public int GenesPerGeneration { get; set; }
+		public int GenesToReproduce { get; set; }
+	}
+
     public class GeneticImages : Controller
     {
         private static Engine engine = new Engine();
 
         [HttpPost]
-        public IActionResult RunStatic(IFormFile file)
+		public IActionResult RunDrawLines(IFormFile file, RunRequestConfig runRequestConfig)
         {
             if (GeneticImages.engine.GetStatus().IsRunning)
             {
@@ -26,9 +33,9 @@ namespace GeneticImages.Controllers
 
 			Engine.RunConfig runConfig = new Engine.RunConfig() {
 				TargetBitmap = targetBitmap,
-				Generations = 100,
-				GenesPerGeneration = 100,
-				GenesToReproduce = 10
+				Generations = runRequestConfig.Generations,
+				GenesPerGeneration = runRequestConfig.GenesPerGeneration,
+				GenesToReproduce = runRequestConfig.GenesToReproduce
 			};
 			GeneticImages.engine.Run(runConfig);
 

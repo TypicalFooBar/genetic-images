@@ -62,7 +62,13 @@
 				engineIsRunning: false,
 				resultsAvailable: false,
 				engineStatusMessage: "",
-				refreshImages: false
+				refreshImages: false,
+				runRequestConfig: {
+					//file: null,
+					generations: 100,
+					genesPerGeneration: 100,
+					genesToReproduce: 10
+				}
 			}
 		},
 		methods: {
@@ -107,16 +113,21 @@
 			uploadFile: function() {
 				// Get only one file (the first one)
 				var file = this.$refs.uploadFileInput.files[0];
+				//this.runConfig.file = file;
 
 				// Set the status message
 				this.engineStatusMessage = "Processing " + file.name;
 				this.fileProcessingOrComplete = true;
 
-				// Create FormData to hold the file for uploadFile
+				// Create FormData for this run request
 				var data = new FormData();
 				data.append('file', file);
+				for (var key in this.runRequestConfig) {
+					data.append(key, this.runRequestConfig[key])
+				}
 
-				this.$http.post("/GeneticImages/RunStatic", data).then(response => {
+				// Post the file and run config to the server to start the engine
+				this.$http.post("/GeneticImages/RunDrawLines", data).then(response => {
 					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
@@ -128,6 +139,9 @@
 				}, response => {
 					this.engineStatusMessage = "Something went wrong...";
 				});
+			},
+			runDrawLines: function() {
+
 			}
 		}
 	}
