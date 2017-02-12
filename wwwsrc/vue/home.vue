@@ -138,9 +138,6 @@
 				}, response => {
 					this.engineStatusMessage = "Something went wrong...";
 				});
-			},
-			runDrawLines: function() {
-
 			}
 		}
 	}

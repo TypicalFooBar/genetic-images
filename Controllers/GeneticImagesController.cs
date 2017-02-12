@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using GeneticImages.Core;
 using Microsoft.AspNetCore.Http;
@@ -37,10 +38,17 @@ namespace GeneticImages.Controllers
 
         public IActionResult BestImageFromGeneration(int id)
         {
-            return new FileStreamResult(
-                new FileStream($"{Utilities.EngineOutputDirectory}/{Utilities.FittestGeneForGenerationDirectory}/{id}.png", FileMode.Open),
-                "image/png"
-            );
+			try
+			{
+				return new FileStreamResult(
+					new FileStream($"{Utilities.EngineOutputDirectory}/{Utilities.FittestGeneForGenerationDirectory}/{id}.png", FileMode.Open),
+					"image/png"
+				);
+			}
+			catch (Exception)
+			{
+				return BadRequest("File not found");
+			}
         }
 
 		public IActionResult LatestImage()
@@ -50,10 +58,17 @@ namespace GeneticImages.Controllers
 
         public IActionResult TargetImage()
         {
-            return new FileStreamResult(
-                new FileStream($"{Utilities.EngineOutputDirectory}/target.png", FileMode.Open),
-                "image/png"
-            );
+			try
+			{
+				return new FileStreamResult(
+					new FileStream($"{Utilities.EngineOutputDirectory}/target.png", FileMode.Open),
+					"image/png"
+				);
+				}
+			catch (Exception)
+			{
+				return BadRequest("File not found");
+			}
         }
 
 		public IActionResult Cancel()
