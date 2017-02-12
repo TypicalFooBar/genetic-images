@@ -58,7 +58,7 @@ namespace GeneticImages.Controllers
         public IActionResult TargetImage()
         {
             return new FileStreamResult(
-                new FileStream("engine-output/target.png", FileMode.Open),
+                new FileStream($"{Utilities.EngineOutputDirectory}/target.png", FileMode.Open),
                 "image/png"
             );
         }
