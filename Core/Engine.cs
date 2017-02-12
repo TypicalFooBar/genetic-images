@@ -20,6 +20,7 @@ namespace GeneticImages.Core
 			public int Generations { get; set; }
 			public int GenesPerGeneration { get; set; }
 			public int GenesToReproduce { get; set; }
+			public int GeneType { get; set; }
 		}
 
         private Population population;
@@ -44,7 +45,17 @@ namespace GeneticImages.Core
 					Directory.Delete(Utilities.EngineOutputDirectory, true);
 
 				this.population = new Population(runConfig.TargetBitmap, runConfig.GenesPerGeneration, runConfig.GenesPerGeneration);
-				population.GenerateStaticGenePopulation();
+				
+				// Generate population
+				switch (runConfig.GeneType)
+				{
+					case 1:
+						population.GeneratePixelGenePopulation();
+						break;
+					case 2:
+						population.GenerateLineGenePopulation();
+						break;
+				}
 				//this.population.GeneratePaintGenePopulation();
 
 				var watch = System.Diagnostics.Stopwatch.StartNew();

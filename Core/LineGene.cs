@@ -3,11 +3,11 @@ using SkiaSharp;
 
 namespace GeneticImages.Core
 {
-    public class DrawLineGene : Gene
+    public class LineGene : Gene
     {
         public List<Stroke> Strokes { get; set; } = new List<Stroke>();
 
-        public DrawLineGene(int width, int height) : base(width, height) {}
+        public LineGene(int width, int height) : base(width, height) {}
 
         public override void InitRandomly()
         {
@@ -24,8 +24,8 @@ namespace GeneticImages.Core
 
         public override Gene Crossover(Gene mate)
         {
-            DrawLineGene matePaintGene = (DrawLineGene)mate;
-            DrawLineGene childGene = new DrawLineGene(this.Bitmap.Width, this.Bitmap.Height);
+            LineGene matePaintGene = (LineGene)mate;
+            LineGene childGene = new LineGene(this.Bitmap.Width, this.Bitmap.Height);
             int mutationMax = 1000;
 
             int numberOfStrokes = 250;

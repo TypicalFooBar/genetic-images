@@ -3,9 +3,9 @@ using SkiaSharp;
 
 namespace GeneticImages.Core
 {
-    public class StaticGene : Gene
+    public class PixelGene : Gene
     {
-        public StaticGene(int width, int height)
+        public PixelGene(int width, int height)
             : base(width, height)
         {
             
@@ -29,8 +29,8 @@ namespace GeneticImages.Core
 
         public override Gene Crossover(Gene mate)
         {
-			StaticGene childGene = new StaticGene(this.Bitmap.Width, this.Bitmap.Height);
-			StaticGene mateStaticGene = (StaticGene)mate;
+			PixelGene childGene = new PixelGene(this.Bitmap.Width, this.Bitmap.Height);
+			PixelGene mateStaticGene = (PixelGene)mate;
 
 			bool chooseFromThisGeneFirst = Utilities.Random.Next(0, 100) > 50;			
 			int mutationMax = 1000;

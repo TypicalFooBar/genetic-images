@@ -64,10 +64,10 @@
 				engineStatusMessage: "",
 				refreshImages: false,
 				runRequestConfig: {
-					//file: null,
 					generations: 100,
 					genesPerGeneration: 100,
-					genesToReproduce: 10
+					genesToReproduce: 10,
+					geneType: 2
 				}
 			}
 		},
@@ -126,8 +126,8 @@
 					data.append(key, this.runRequestConfig[key])
 				}
 
-				// Post the file and run config to the server to start the engine
-				this.$http.post("/GeneticImages/RunDrawLines", data).then(response => {
+				// Start the engine
+				this.$http.post("/GeneticImages/Run", data).then(response => {
 					this.engineIsRunning = response.body.isRunning;
 					this.resultsAvailable = response.body.resultsAvailable;
 					this.engineStatusMessage = response.body.message;
