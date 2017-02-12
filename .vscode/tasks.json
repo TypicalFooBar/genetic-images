@@ -16,6 +16,12 @@
             "args": ["run"]
         },
 		{
+			"taskName": "browserify",
+			"isShellCommand": true,
+			"command": "node_modules/browserify/bin/cmd.js",
+			"args": ["-t", "vueify", "wwwsrc/js/main.js", "-o", "wwwroot/js/build.js"]
+		},
+		{
 			"taskName": "watchify",
 			"isShellCommand": true,
 			"command": "node_modules/watchify/bin/cmd.js",
