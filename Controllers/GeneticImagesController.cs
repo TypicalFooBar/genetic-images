@@ -45,7 +45,7 @@ namespace GeneticImages.Controllers
         public IActionResult BestImageFromGeneration(int id)
         {
             return new FileStreamResult(
-                new FileStream($"engine-output/generation-{id}.png", FileMode.Open),
+                new FileStream($"{Utilities.EngineOutputDirectory}/{Utilities.FittestGeneForGenerationDirectory}/{id}.png", FileMode.Open),
                 "image/png"
             );
         }

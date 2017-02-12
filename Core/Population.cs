@@ -38,7 +38,7 @@ namespace GeneticImages.Core
 			this.numberOfGenes = numberOfGenes;
 			this.numberOfGenesToReproduce = numberOfGenesToReproduce;
 
-            Utilities.SaveBitmapAsPng(this.targetBitmap, "target");
+            Utilities.SaveBitmap(this.targetBitmap, $"{Utilities.EngineOutputDirectory}/target.png");
         }
 
         // public void GenerateStaticGenePopulation()

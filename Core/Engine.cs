@@ -39,8 +39,9 @@ namespace GeneticImages.Core
 				// Update engine status
 				this.UpdateStatus(true, false, "Engine is running");
 
-				// Remove the current engine output directory
-				Directory.Delete("engine-output", true);
+				// Remove the current engine output directory if it exists
+				if (Directory.Exists(Utilities.EngineOutputDirectory))
+					Directory.Delete(Utilities.EngineOutputDirectory, true);
 
 				this.population = new Population(runConfig.TargetBitmap, runConfig.GenesPerGeneration, runConfig.GenesPerGeneration);
 				//population.GenerateStaticGenePopulation();
@@ -63,8 +64,7 @@ namespace GeneticImages.Core
 					Gene topGene = this.population.NaturalSelection();
 
 					// Save the image of the top gene
-					//if (this.CurrentGeneration % 100 == 0)
-						Utilities.SaveBitmapAsPng(topGene.Bitmap, $"/generation-{i}");
+					Utilities.SaveFittestGeneForGeneration(topGene.Bitmap, i);
 
 					// Update engine status
 					this.status.CurrentGeneration = i ;
@@ -75,7 +75,7 @@ namespace GeneticImages.Core
 				System.Console.WriteLine($"Milliseconds: {elapsedMs}");
 
 				this.population.EvaluateFitness();
-				Utilities.SaveBitmapAsPng(this.population.BestGene.Bitmap, "result");
+				Utilities.SaveBitmap(this.population.BestGene.Bitmap, $"{Utilities.EngineOutputDirectory}/result.png");
 
 				// Update engine status
 				this.UpdateStatus(false, true, "Results are available");
