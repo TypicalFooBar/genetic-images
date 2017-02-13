@@ -4,42 +4,63 @@
 <template>
 	<div v-if="appInitialized" v-cloak>
 		<div class="flex">
-			<div></div>
+			<div>
+				<run-config-editor v-on:run="run"></run-config-editor>
+			</div>
 			<div class="text-center">
-				<div v-if="engineIsRunning || resultsAvailable">
-					<p>{{engineStatusMessage}}</p>
+				<div v-if="engineStatus.isRunning || engineStatus.resultsAvailable">
+					<h3>Results</h3>
 					<div class="flex two">
 						<div>
-							<image-card-component
+							<image-card
 								src="/GeneticImages/TargetImage"
 								message="Target Image"
 								:refresh="refreshImages"/>
 						</div>
 						<div>
-							<image-card-component
+							<image-card
 								src="/GeneticImages/LatestImage"
-								message="Latest Computed Image"
-								:refresh="engineIsRunning || refreshImages"/>
+								message="Best Image"
+								:refresh="engineStatus.isRunning || refreshImages"/>
 						</div>
 					</div>
-					<div v-if="!resultsAvailable">
+					<div v-if="!engineStatus.resultsAvailable">
 						<i class="fa fa-cog fa-spin fa-5x fa-fw"></i>
 					</div>
 					<div v-if="resultsAvailable">
-
-					</div>
-				</div>
-				<div v-if="!engineIsRunning">
-					<h1>Upload Image</h1>
-					<div>
-						<label class="dropimage">
-							<input ref="uploadFileInput" v-on:change="uploadFile" title="Drop image or click me" type="file">
-						</label>
 					</div>
 				</div>
 			</div>
-			<div></div>
+			<div>
+				<engine-status
+					:isRunning="engineStatus.isRunning"
+					:resultsAvailable="engineStatus.resultsAvailable"
+					:currentGeneration="engineStatus.currentGeneration"
+					:message="engineStatus.message"
+					v-on:cancel="cancel">
+				</engine-status>
+			</div>
 		</div>
+
+		<div class="modal">
+			<input ref="modalAlert" id="modalAlert" type="checkbox" />
+			<label for="modalAlert" class="overlay"></label>
+			<article>
+				<header>
+					<h3>{{modalAlert.title}}</h3>
+					<label for="modalAlert" class="close">&times;</label>
+				</header>
+				<section class="content">
+					{{modalAlert.message}}
+				</section>
+				<footer>
+					<label for="modalAlert" class="button">
+						Close
+					</label>
+				</footer>
+			</article>
+		</div>
+
 	</div>
 </template>
 
@@ -50,7 +71,7 @@
 			this.getEngineStatus().then(response => {
 				this.appInitialized = true;
 
-				if (this.engineIsRunning) {
+				if (this.engineStatus.isRunning) {
 					// Start the status loop
 					this.getEngineStatusTimeout();
 				}
@@ -59,15 +80,11 @@
 		data() {
 			return {
 				appInitialized: false,
-				engineIsRunning: false,
-				resultsAvailable: false,
-				engineStatusMessage: "",
+				engineStatus: null,
 				refreshImages: false,
-				runConfig: {
-					generations: 100,
-					genesPerGeneration: 100,
-					genesToReproduce: 10,
-					geneType: 2
+				modalAlert: {
+					title: null,
+					message: null
 				}
 			}
 		},
@@ -78,7 +95,7 @@
 					// Get the engine status
 					self.getEngineStatus().then(response => {
 						// If the engine is running
-						if (self.engineIsRunning) {
+						if (self.engineStatus.isRunning) {
 							// Do the timeout again until the engine is not running
 							self.getEngineStatusTimeout();
 						}
@@ -93,9 +110,7 @@
 			},
 			getEngineStatus: function() {
 				return this.$http.get("/GeneticImages/EngineStatus").then(response => {
-					this.engineIsRunning = response.body.isRunning;
-					this.resultsAvailable = response.body.resultsAvailable;
-					this.engineStatusMessage = response.body.message;
+					this.engineStatus = response.body;
 
 					return Promise.resolve();
 				})
@@ -110,33 +125,37 @@
 					self.refreshImages = false;
 				}, 2000);
 			},
-			uploadFile: function() {
-				// Get only one file (the first one)
-				var file = this.$refs.uploadFileInput.files[0];
-
-				// Set the status message
-				this.engineStatusMessage = "Processing " + file.name;
-				this.fileProcessingOrComplete = true;
-
+			run: function(runConfig) {
 				// Create FormData for this run request
 				var data = new FormData();
-				data.append('file', file);
-				for (var key in this.runConfig) {
-					data.append(key, this.runConfig[key])
+				data.append('file', runConfig.file);
+				for (var key in runConfig) {
+					data.append(key, runConfig[key]);
 				}
 
 				// Start the engine
 				this.$http.post("/GeneticImages/Run", data).then(response => {
-					this.engineIsRunning = response.body.isRunning;
-					this.resultsAvailable = response.body.resultsAvailable;
-					this.engineStatusMessage = response.body.message;
+					this.engineStatus = response.body;
 
 					// Refresh the images to make sure we get the new target image
 					this.imageRefresh();
 
 					this.getEngineStatusTimeout();
 				}, response => {
-					this.engineStatusMessage = "Something went wrong...";
+					// Show the modal alert
+					this.modalAlert.title = "Could not start instance";
+					this.modalAlert.message = response.body.message;
+					this.$refs.modalAlert.checked = true;
+				});
+			},
+			cancel: function() {
+				this.$http.get("/GeneticImages/Cancel").then(response => {
+					this.engineStatus = response.body;
+				}, response => {
+					// Show the modal alert
+					this.modalAlert.title = "Error canceling engine";
+					this.modalAlert.message = "hmm...not sure what happened...";
+					this.$refs.modalAlert.checked = true;
 				});
 			}
 		}

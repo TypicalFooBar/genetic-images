@@ -21,6 +21,8 @@ namespace GeneticImages.Core
 			public int GenesPerGeneration { get; set; }
 			public int GenesToReproduce { get; set; }
 			public int GeneType { get; set; }
+			public int MutationRangeMax { get; set; }
+			public int NumberOfStrokes { get; set; }
 		}
 
         private Population population;
@@ -44,16 +46,16 @@ namespace GeneticImages.Core
 				if (Directory.Exists(Utilities.EngineOutputDirectory))
 					Directory.Delete(Utilities.EngineOutputDirectory, true);
 
-				this.population = new Population(runConfig.TargetBitmap, runConfig.GenesPerGeneration, runConfig.GenesPerGeneration);
+				this.population = new Population(runConfig.TargetBitmap, runConfig);
 				
 				// Generate population
 				switch (runConfig.GeneType)
 				{
 					case 1:
-						population.GeneratePixelGenePopulation();
+						population.GeneratePixelGenePopulation(runConfig);
 						break;
 					case 2:
-						population.GenerateLineGenePopulation();
+						population.GenerateLineGenePopulation(runConfig);
 						break;
 				}
 				//this.population.GeneratePaintGenePopulation();

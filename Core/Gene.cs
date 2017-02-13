@@ -7,10 +7,14 @@ namespace GeneticImages.Core
     {
 		public SKBitmap Bitmap { get; protected set; }
         public int Fitness { get; protected set; }
+		public int MutationRangeMax { get; protected set; }
+		protected int MutationNumber { get; set; }
 
-        public Gene(int width, int height)
+        public Gene(int width, int height, int mutationRangeMax)
         {
             this.Bitmap = new SKBitmap(width, height);
+			this.MutationRangeMax = mutationRangeMax;
+			this.MutationNumber = Utilities.Random.Next(0, this.MutationRangeMax);
         }
 
         public abstract void InitRandomly();

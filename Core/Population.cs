@@ -32,30 +32,30 @@ namespace GeneticImages.Core
             }
         }
 
-        public Population(SKBitmap targetBitmap, int numberOfGenes, int numberOfGenesToReproduce)
+        public Population(SKBitmap targetBitmap, Engine.RunConfig runConfig)
         {
             this.targetBitmap = targetBitmap;
-			this.numberOfGenes = numberOfGenes;
-			this.numberOfGenesToReproduce = numberOfGenesToReproduce;
+			this.numberOfGenes = runConfig.GenesPerGeneration;
+			this.numberOfGenesToReproduce = runConfig.GenesToReproduce;
 
             Utilities.SaveBitmap(this.targetBitmap, $"{Utilities.EngineOutputDirectory}/target.png");
         }
 
-        public void GeneratePixelGenePopulation()
+        public void GeneratePixelGenePopulation(Engine.RunConfig runConfig)
         {
             for (int i = 0; i < this.numberOfGenes; i++)
             {
-                Gene gene = new PixelGene(this.targetBitmap.Width, this.targetBitmap.Height);
+                Gene gene = new PixelGene(this.targetBitmap.Width, this.targetBitmap.Height, runConfig.MutationRangeMax);
                 gene.InitRandomly();
                 this.genes.Add(gene);
             }
         }
 
-        public void GenerateLineGenePopulation()
+        public void GenerateLineGenePopulation(Engine.RunConfig runConfig)
         {
             for (int i = 0; i < this.numberOfGenes; i++)
             {
-                Gene gene = new LineGene(this.targetBitmap.Width, this.targetBitmap.Height);
+                Gene gene = new LineGene(this.targetBitmap.Width, this.targetBitmap.Height, runConfig.MutationRangeMax, runConfig.NumberOfStrokes);
                 gene.InitRandomly();
                 this.genes.Add(gene);
             }

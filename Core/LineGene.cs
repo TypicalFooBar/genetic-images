@@ -6,14 +6,16 @@ namespace GeneticImages.Core
     public class LineGene : Gene
     {
         public List<Stroke> Strokes { get; set; } = new List<Stroke>();
+		private int numberOfStrokes;
 
-        public LineGene(int width, int height) : base(width, height) {}
+        public LineGene(int width, int height, int mutationRangeMax, int numberOfStrokes) : base(width, height, mutationRangeMax)
+		{
+			this.numberOfStrokes = numberOfStrokes;
+		}
 
         public override void InitRandomly()
         {
-            int numberOfStrokes = 250;
-
-            for (int i = 0; i < numberOfStrokes; i++)
+            for (int i = 0; i < this.numberOfStrokes; i++)
             {
                 Stroke stroke = new Stroke();
                 stroke.InitRandomly(this.Bitmap.Width, this.Bitmap.Height);
@@ -25,19 +27,17 @@ namespace GeneticImages.Core
         public override Gene Crossover(Gene mate)
         {
             LineGene matePaintGene = (LineGene)mate;
-            LineGene childGene = new LineGene(this.Bitmap.Width, this.Bitmap.Height);
-            int mutationMax = 1000;
+            LineGene childGene = new LineGene(this.Bitmap.Width, this.Bitmap.Height, this.MutationRangeMax, this.numberOfStrokes);
 
-            int numberOfStrokes = 250;
-            for (int i = 0; i < numberOfStrokes; i++)
+            for (int i = 0; i < this.numberOfStrokes; i++)
             {
                 Stroke stroke = new Stroke();
                 stroke.Paint = 
-                    Utilities.Random.Next(0, mutationMax) == 675 ?
+                    Utilities.Random.Next(0, this.MutationRangeMax) == this.MutationNumber ?
                         Stroke.RandomPaint() :
                         (Utilities.Random.Next(0, 100) > 50 ? this.Strokes[i].Paint : matePaintGene.Strokes[i].Paint);
                 stroke.Points =
-                    Utilities.Random.Next(0, mutationMax) == 675 ?
+                    Utilities.Random.Next(0, this.MutationRangeMax) == this.MutationNumber ?
                         Stroke.RandomPoints(this.Bitmap.Width, this.Bitmap.Height) :
                         (Utilities.Random.Next(0, 100) > 50 ? this.Strokes[i].Points : matePaintGene.Strokes[i].Points);
 

@@ -8,14 +8,18 @@ var VueResource = require('vue-resource');
 var Nav = require('../vue/nav.vue');
 var Home = require('../vue/home.vue');
 var ImageCard = require('../vue/image-card.vue');
+var RunConfigEditor = require('../vue/run-config-editor.vue');
+var EngineStatus = require('../vue/engine-status.vue');
 
 // Vue modules
 Vue.use(VueResource);
 
 // Declare the components
 Vue.component('nav-component', Nav);
-Vue.component('home-component', Home);
-Vue.component('image-card-component', ImageCard);
+Vue.component('home', Home);
+Vue.component('image-card', ImageCard);
+Vue.component('run-config-editor', RunConfigEditor);
+Vue.component('engine-status', EngineStatus);
 
 // Root instance
 new Vue({
