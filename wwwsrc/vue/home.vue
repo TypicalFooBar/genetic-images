@@ -27,7 +27,12 @@
 					<div v-if="!engineStatus.resultsAvailable">
 						<i class="fa fa-cog fa-spin fa-5x fa-fw"></i>
 					</div>
-					<div v-if="resultsAvailable">
+					<div v-if="engineStatus.resultsAvailable">
+						<h3>Result - Step by Step</h3>
+						<image-step-by-step
+							:numberOfSteps="150"
+							:refresh="engineStatus.resultsAvailable">
+						</image-step-by-step>
 					</div>
 				</div>
 			</div>

@@ -10,6 +10,7 @@ var Home = require('../vue/home.vue');
 var ImageCard = require('../vue/image-card.vue');
 var RunConfigEditor = require('../vue/run-config-editor.vue');
 var EngineStatus = require('../vue/engine-status.vue');
+var ImageStepByStep = require('../vue/image-step-by-step.vue');
 
 // Vue modules
 Vue.use(VueResource);
@@ -20,6 +21,7 @@ Vue.component('home', Home);
 Vue.component('image-card', ImageCard);
 Vue.component('run-config-editor', RunConfigEditor);
 Vue.component('engine-status', EngineStatus);
+Vue.component('image-step-by-step', ImageStepByStep);
 
 // Root instance
 new Vue({

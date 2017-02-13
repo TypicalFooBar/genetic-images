@@ -71,6 +71,21 @@ namespace GeneticImages.Controllers
 			}
         }
 
+		public IActionResult Step(int id)
+		{
+			try
+			{
+				return new FileStreamResult(
+					new FileStream($"{Utilities.EngineOutputDirectory}/{Utilities.FittestGeneStepsDirectory}/{id}.png", FileMode.Open),
+					"image/png"
+				);
+				}
+			catch (Exception)
+			{
+				return BadRequest("File not found");
+			}
+		}
+
 		public IActionResult Cancel()
 		{
 			GeneticImages.engine.Cancel();
