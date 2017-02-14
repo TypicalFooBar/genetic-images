@@ -12,6 +12,9 @@ namespace GeneticImages.Core
 			public bool IsRunning { get; set; }
 			public bool ResultsAvailable { get; set; }
 			public string Message { get; set; }
+			public int NumberOfSteps { get; set; }
+			public int ImageWidth { get; set; }
+			public int ImageHeight { get; set; }
         }
 
 		public class RunConfig
@@ -22,7 +25,7 @@ namespace GeneticImages.Core
 			public int GenesToReproduce { get; set; }
 			public int GeneType { get; set; }
 			public int MutationRangeMax { get; set; }
-			public int NumberOfStrokes { get; set; }
+			public int NumberOfSteps { get; set; }
 		}
 
         private Population population;
@@ -40,7 +43,7 @@ namespace GeneticImages.Core
 			// Create a new run instance
 			this.runInstance = Task.Run(() => {
 				// Update engine status
-				this.UpdateStatus(true, false, "Engine is running");
+				this.UpdateStatus(true, false, "Engine is running", runConfig);
 
 				// Remove the current engine output directory if it exists
 				if (Directory.Exists(Utilities.EngineOutputDirectory))
@@ -58,7 +61,6 @@ namespace GeneticImages.Core
 						population.GenerateLineGenePopulation(runConfig);
 						break;
 				}
-				//this.population.GeneratePaintGenePopulation();
 
 				var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -68,7 +70,7 @@ namespace GeneticImages.Core
 					if (this.cancel)
 					{
 						// Update engine status
-						this.UpdateStatus(false, true, "Engine was cancelled");
+						this.UpdateStatus(false, true, "Engine was cancelled", runConfig);
 						this.cancel = false;
 						break;
 					}
@@ -95,7 +97,7 @@ namespace GeneticImages.Core
 				Utilities.SaveBitmap(this.population.BestGene.Bitmap, $"{Utilities.EngineOutputDirectory}/result.png");
 
 				// Update engine status
-				this.UpdateStatus(false, true, "Results are available");
+				this.UpdateStatus(false, true, "Results are available", runConfig);
 				this.cancel = false;
 			});
         }
@@ -105,11 +107,14 @@ namespace GeneticImages.Core
 			this.cancel = true;
 		}
 
-		private void UpdateStatus(bool isRunning, bool resultsAvailable, string message)
+		private void UpdateStatus(bool isRunning, bool resultsAvailable, string message, RunConfig runConfig)
 		{
 			this.status.IsRunning = isRunning;
 			this.status.ResultsAvailable = resultsAvailable;
 			this.status.Message = message;
+			this.status.NumberOfSteps = runConfig.NumberOfSteps;
+			this.status.ImageWidth = runConfig.TargetBitmap.Width;
+			this.status.ImageHeight = runConfig.TargetBitmap.Height;
 		}
 
         public Engine.Status GetStatus()

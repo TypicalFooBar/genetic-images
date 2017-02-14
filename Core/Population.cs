@@ -55,7 +55,7 @@ namespace GeneticImages.Core
         {
             for (int i = 0; i < this.numberOfGenes; i++)
             {
-                Gene gene = new LineGene(this.targetBitmap.Width, this.targetBitmap.Height, runConfig.MutationRangeMax, runConfig.NumberOfStrokes);
+                Gene gene = new LineGene(this.targetBitmap.Width, this.targetBitmap.Height, runConfig.MutationRangeMax, runConfig.NumberOfSteps);
                 gene.InitRandomly();
                 this.genes.Add(gene);
             }

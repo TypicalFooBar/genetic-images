@@ -28,11 +28,11 @@
 						<i class="fa fa-cog fa-spin fa-5x fa-fw"></i>
 					</div>
 					<div v-if="engineStatus.resultsAvailable">
-						<h3>Result - Step by Step</h3>
-						<image-step-by-step
-							:numberOfSteps="150"
-							:refresh="engineStatus.resultsAvailable">
-						</image-step-by-step>
+						<step-by-step-gif
+							:numberOfSteps="engineStatus.numberOfSteps"
+							:width="engineStatus.imageWidth"
+							:height="engineStatus.imageHeight">
+						</step-by-step-gif>
 					</div>
 				</div>
 			</div>

@@ -28,8 +28,8 @@
 		<h4>Mutation Range Max (0-X)</h4>
 		<input type="number" v-model="runConfig.mutationRangeMax">
 		<div v-if="runConfig.geneType == 2">
-			<h4># of Strokes</h4>
-			<input type="number" v-model="runConfig.numberOfStrokes">
+			<h4># of Steps</h4>
+			<input type="number" v-model="runConfig.numberOfSteps">
 		</div>
 		<button v-on:click="runClicked">Run</button>
 	</div>
@@ -54,7 +54,7 @@
 					genesToReproduce: 10,
 					geneType: 2,
 					mutationRangeMax: 1000,
-					numberOfStrokes: 250
+					numberOfSteps: 250
 				}
 			}
 		},

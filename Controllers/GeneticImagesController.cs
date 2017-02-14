@@ -90,6 +90,8 @@ namespace GeneticImages.Controllers
 		{
 			GeneticImages.engine.Cancel();
 
+			// TODO: Create the final image steps here
+
 			return Ok(GeneticImages.engine.GetStatus());
 		}
 

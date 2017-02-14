@@ -6,16 +6,16 @@ namespace GeneticImages.Core
     public class LineGene : Gene
     {
         public List<Stroke> Strokes { get; set; } = new List<Stroke>();
-		private int numberOfStrokes;
+		private int numberOfSeps;
 
-        public LineGene(int width, int height, int mutationRangeMax, int numberOfStrokes) : base(width, height, mutationRangeMax)
+        public LineGene(int width, int height, int mutationRangeMax, int numberOfSteps) : base(width, height, mutationRangeMax)
 		{
-			this.numberOfStrokes = numberOfStrokes;
+			this.numberOfSeps = numberOfSteps;
 		}
 
         public override void InitRandomly()
         {
-            for (int i = 0; i < this.numberOfStrokes; i++)
+            for (int i = 0; i < this.numberOfSeps; i++)
             {
                 Stroke stroke = new Stroke();
                 stroke.InitRandomly(this.Bitmap.Width, this.Bitmap.Height);
@@ -27,9 +27,9 @@ namespace GeneticImages.Core
         public override Gene Crossover(Gene mate)
         {
             LineGene matePaintGene = (LineGene)mate;
-            LineGene childGene = new LineGene(this.Bitmap.Width, this.Bitmap.Height, this.MutationRangeMax, this.numberOfStrokes);
+            LineGene childGene = new LineGene(this.Bitmap.Width, this.Bitmap.Height, this.MutationRangeMax, this.numberOfSeps);
 
-            for (int i = 0; i < this.numberOfStrokes; i++)
+            for (int i = 0; i < this.numberOfSeps; i++)
             {
                 Stroke stroke = new Stroke();
                 stroke.Paint = 
@@ -65,7 +65,7 @@ namespace GeneticImages.Core
 		public override void SaveSteps()
 		{
 			SKCanvas canvas = new SKCanvas(this.Bitmap);
-			canvas.Clear(SKColors.Transparent);
+			canvas.Clear(SKColors.White);
 			
             for (int i = 0; i < this.Strokes.Count; i++)
             {
